@@ -28,11 +28,25 @@ public class Program
         //can be builder.Services.AddScoped<EmployeeRepository>(); will work but better to specify the interface
         builder.Services.AddControllers();
 
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+
         var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(cfg =>
+            {
+                cfg.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+                cfg.RoutePrefix = string.Empty; //swagger is now displayed at index
+            });
+        }
 
         app.UseCors("MyCors");
 
-        app.MapGet("/", () => "Hello World!");
+        app.MapControllers();
 
         app.Run();
     }

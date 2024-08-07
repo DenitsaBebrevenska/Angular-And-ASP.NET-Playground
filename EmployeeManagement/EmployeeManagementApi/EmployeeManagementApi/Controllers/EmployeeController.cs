@@ -14,10 +14,29 @@ public class EmployeeController : ControllerBase
         _employeeRepository = repository;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Employee>>> GetAllEmployeesAsync()
+    {
+        return Ok(await _employeeRepository.GetAllAsync());
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Employee>> GetEmployeeByIdAsync(int id)
+    {
+        var employeeInDb = await _employeeRepository.GetByIdAsync(id);
+
+        if (employeeInDb == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(employeeInDb);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Employee>> CreateEmployee(Employee employee)
     {
         await _employeeRepository.AddEmployeeAsync(employee);
-        return Created();
+        return CreatedAtAction(nameof(GetEmployeeByIdAsync), new { id = employee.Id });
     }
 }
