@@ -1,4 +1,6 @@
 using EmployeeManagementApi.Data;
+using EmployeeManagementApi.Repositories;
+using EmployeeManagementApi.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementApi;
@@ -20,6 +22,11 @@ public class Program
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             }));
+
+
+        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); //lifetime scope, the scope of one http request
+        //can be builder.Services.AddScoped<EmployeeRepository>(); will work but better to specify the interface
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 
