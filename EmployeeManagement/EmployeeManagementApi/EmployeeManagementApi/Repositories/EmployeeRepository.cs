@@ -30,11 +30,20 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task UpdateEmployeeAsync(Employee employee)
     {
-
+        _context.Employees.Update(employee);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteEmployeeAsync(int id)
     {
-        await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+        var employeeInDb = await _context.Employees.FindAsync(id);
+
+        if (employeeInDb == null)
+        {
+            throw new KeyNotFoundException($"Employee with {id} was not found!");
+        }
+
+        _context.Employees.Remove(employeeInDb);
+        await _context.SaveChangesAsync();
     }
 }
