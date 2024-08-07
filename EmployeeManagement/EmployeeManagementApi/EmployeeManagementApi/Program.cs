@@ -12,7 +12,18 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(
             options => options.UseInMemoryDatabase("EmployeeDb"));
 
+        builder.Services.AddCors(options =>
+            options.AddPolicy("MyCors", policyBuilder =>
+            {
+                policyBuilder
+                    .WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            }));
+
         var app = builder.Build();
+
+        app.UseCors("MyCors");
 
         app.MapGet("/", () => "Hello World!");
 
