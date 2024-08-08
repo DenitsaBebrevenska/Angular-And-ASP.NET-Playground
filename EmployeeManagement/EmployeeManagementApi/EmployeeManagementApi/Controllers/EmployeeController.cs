@@ -21,7 +21,10 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> GetEmployeeByIdAsync(int id)
+    //if this stays named as originally GetEmployeeByIdAsync
+    //it appears it causes issues with the CreatedAtAction within the CreateEmployee method
+    //
+    public async Task<ActionResult<Employee>> GetEmployeeById(int id)
     {
         var employeeInDb = await _employeeRepository.GetByIdAsync(id);
 
@@ -37,6 +40,6 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult<Employee>> CreateEmployee(Employee employee)
     {
         await _employeeRepository.AddEmployeeAsync(employee);
-        return CreatedAtAction(nameof(GetEmployeeByIdAsync), new { id = employee.Id });
+        return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employee);
     }
 }
